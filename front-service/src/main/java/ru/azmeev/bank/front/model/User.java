@@ -1,41 +1,25 @@
 package ru.azmeev.bank.front.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
-@Entity
-@Table(name = "BANK_USERS")
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserEntity implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @Column(name = "login", nullable = false)
+public class User implements UserDetails {
     private String login;
-
-    @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
+    private List<Account> accounts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

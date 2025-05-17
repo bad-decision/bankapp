@@ -10,11 +10,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.azmeev.bank.front.model.UserEntity;
-import ru.azmeev.bank.front.service.AccountService;
+import ru.azmeev.bank.front.model.Currency;
+import ru.azmeev.bank.front.model.User;
 import ru.azmeev.bank.front.service.CashService;
 import ru.azmeev.bank.front.service.TransferService;
-import ru.azmeev.bank.front.service.UserService;
+import ru.azmeev.bank.front.service.AccountService;
 import ru.azmeev.bank.front.web.dto.*;
 
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
     private final AccountService accountService;
     private final CashService cashService;
     private final TransferService transferService;
@@ -46,51 +45,55 @@ public class UserController {
             model.addAttribute("errors", getValidationErrors(bindingResult));
             return "signup";
         }
-        userService.register(dto);
+        accountService.register(dto);
         return "redirect:/login";
     }
 
     @GetMapping("/main")
-    public String mainScreen(@AuthenticationPrincipal UserEntity currentUser,
+    public String mainScreen(@AuthenticationPrincipal User currentUser,
                              Model model) {
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("accounts", accountService.getUserAccounts(currentUser.getLogin()));
-        model.addAttribute("currency", accountService.getCurrency());
-        model.addAttribute("users", userService.getUsersToTransfer());
+        User user = accountService.findUserByLogin(currentUser.getLogin());
+        List<User> usersToTransfer = accountService.getUsersToTransfer(currentUser.getLogin());
+        List<Currency> currency = accountService.getCurrency();
+
+        model.addAttribute("currentUser", user);
+        model.addAttribute("accounts", user.getAccounts());
+        model.addAttribute("currency", currency);
+        model.addAttribute("users", usersToTransfer);
         return "main";
     }
 
     @PostMapping("/editPassword")
-    public String editPassword(@AuthenticationPrincipal UserEntity currentUser,
-                               BindingResult bindingResult,
+    public String editPassword(@AuthenticationPrincipal User currentUser,
                                @Valid UserEditPasswordDto dto,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               Model model,
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("passwordErrors", getValidationErrors(bindingResult));
             return "redirect:/main";
         }
         dto.setLogin(currentUser.getLogin());
-        userService.editPassword(dto);
+        accountService.editPassword(dto);
         return "redirect:/login";
     }
 
     @PostMapping("/editAccounts")
-    public String editAccounts(@AuthenticationPrincipal UserEntity currentUser,
-                               BindingResult bindingResult,
+    public String editAccounts(@AuthenticationPrincipal User currentUser,
                                @Valid UserEditAccountsDto dto,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("userAccountsErrors", getValidationErrors(bindingResult));
         } else {
             dto.setLogin(currentUser.getLogin());
-            userService.editUser(currentUser.getLogin(), dto.getName(), dto.getBirthdate());
             accountService.editAccounts(dto);
         }
         return "redirect:/main";
     }
 
     @PostMapping("/cash")
-    public String cash(@AuthenticationPrincipal UserEntity currentUser,
+    public String cash(@AuthenticationPrincipal User currentUser,
                        BindingResult bindingResult,
                        @Valid UserCashDto dto,
                        RedirectAttributes redirectAttributes) {
@@ -104,7 +107,7 @@ public class UserController {
     }
 
     @PostMapping("/transfer")
-    public String transfer(@AuthenticationPrincipal UserEntity currentUser,
+    public String transfer(@AuthenticationPrincipal User currentUser,
                            BindingResult bindingResult,
                            @Valid UserTransferDto dto,
                            RedirectAttributes redirectAttributes) {

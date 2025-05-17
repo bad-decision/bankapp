@@ -1,13 +1,12 @@
-package ru.azmeev.bank.front.model;
+package ru.azmeev.bank.account.web.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-public class Currency {
+public class CurrencyDto {
+    private Long id;
     private String title;
     private String name;
 }
