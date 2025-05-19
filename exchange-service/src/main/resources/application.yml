@@ -1,6 +1,16 @@
 spring:
   application:
-    name: front-service
+    name: exchange-service
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/exchange
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
   security:
     oauth2:
       client:
@@ -11,20 +21,12 @@ spring:
           keycloak:
             authorizationGrantType: client_credentials
             provider: keycloak
-            client-id: front-service
-            client-secret: ${CLIENT_SECRET:eTI5yoY93m9nZj2FRDRKSyIxocTEfAaO}
+            client-id: exchange-service
+            client-secret: ${CLIENT_SECRET:YF7ee06fM9OKnrGOt0HxgL12qc7VgdSO}
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             scope: openid, profile, email
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8090/realms/master
 server:
-  port: 8010
-
-service:
-  account:
-    url: http://localhost:8020
-  cash:
-    url: http://localhost:8030
-  exchange:
-    url: http://localhost:8050
+  port: 8050

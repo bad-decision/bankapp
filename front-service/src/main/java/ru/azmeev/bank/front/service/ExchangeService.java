@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ExchangeService {
 
-    List<ExchangeRate> getExchangeRates(String currencyName);
+    List<ExchangeRate> getExchangeRates();
 }

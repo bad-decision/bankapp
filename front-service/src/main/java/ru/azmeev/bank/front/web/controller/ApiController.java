@@ -18,6 +18,6 @@ public class ApiController {
 
     @GetMapping("/rates")
     public List<ExchangeRate> rate() {
-        return exchangeService.getExchangeRates("RUB");
+        return exchangeService.getExchangeRates();
     }
 }
