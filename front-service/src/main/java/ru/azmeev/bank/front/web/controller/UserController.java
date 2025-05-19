@@ -94,9 +94,9 @@ public class UserController {
 
     @PostMapping("/cash")
     public String cash(@AuthenticationPrincipal User currentUser,
-                       BindingResult bindingResult,
-                       @Valid UserCashDto dto,
-                       RedirectAttributes redirectAttributes) {
+                       @Valid CashActionRequest dto,
+                       RedirectAttributes redirectAttributes,
+                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("cashErrors", getValidationErrors(bindingResult));
         } else {

@@ -1,8 +1,9 @@
 package ru.azmeev.bank.front.service;
 
-import ru.azmeev.bank.front.web.dto.UserCashDto;
+import ru.azmeev.bank.front.web.dto.CashActionResult;
+import ru.azmeev.bank.front.web.dto.CashActionRequest;
 
 public interface CashService {
 
-    void processCashAction(UserCashDto dto);
+    CashActionResult processCashAction(CashActionRequest dto);
 }

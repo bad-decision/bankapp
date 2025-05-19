@@ -3,10 +3,7 @@ package ru.azmeev.bank.account.web.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.azmeev.bank.account.service.UserService;
-import ru.azmeev.bank.account.web.dto.UserDto;
-import ru.azmeev.bank.account.web.dto.UserEditAccountsDto;
-import ru.azmeev.bank.account.web.dto.UserEditPasswordDto;
-import ru.azmeev.bank.account.web.dto.UserRegistrationDto;
+import ru.azmeev.bank.account.web.dto.*;
 
 import java.util.List;
 
@@ -35,6 +32,11 @@ public class UserController {
     @PostMapping("/editAccounts")
     public void editAccounts(@RequestBody UserEditAccountsDto dto) {
         userService.editAccounts(dto);
+    }
+
+    @PostMapping("/cash")
+    public Boolean cash(@RequestBody CashActionRequest dto) {
+        return userService.cash(dto);
     }
 
     @GetMapping("/{login}/usersToTransfer")

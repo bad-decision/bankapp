@@ -1,6 +1,6 @@
 spring:
   application:
-    name: front-service
+    name: cash-service
   security:
     oauth2:
       client:
@@ -11,18 +11,21 @@ spring:
           keycloak:
             authorizationGrantType: client_credentials
             provider: keycloak
-            client-id: front-service
-            client-secret: ${CLIENT_SECRET:eTI5yoY93m9nZj2FRDRKSyIxocTEfAaO}
-#            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            client-id: cash-service
+            client-secret: ${CLIENT_SECRET:I0StlCY5tNJTvaIbPJdiMBgGtmIR5yN1}
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             scope: openid, profile, email
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8090/realms/master
+
 server:
-  port: 8010
+  port: 8030
 
 service:
   account:
     url: http://localhost:8020
-  cash:
-    url: http://localhost:8030
+  blocker:
+    url: http://localhost:8070
+  notifications:
+    url: http://localhost:8080

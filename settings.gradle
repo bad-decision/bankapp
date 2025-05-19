@@ -2,3 +2,4 @@ rootProject.name = 'bankapp'
 
 include ':front'
 include ':account'
+include ':cash'

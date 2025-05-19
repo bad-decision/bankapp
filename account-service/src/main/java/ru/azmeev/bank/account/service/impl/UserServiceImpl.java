@@ -5,16 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.azmeev.bank.account.model.AccountEntity;
+import ru.azmeev.bank.account.model.CashAction;
 import ru.azmeev.bank.account.model.CurrencyEntity;
 import ru.azmeev.bank.account.model.UserEntity;
 import ru.azmeev.bank.account.repository.AccountRepository;
 import ru.azmeev.bank.account.repository.CurrencyRepository;
 import ru.azmeev.bank.account.repository.UserRepository;
 import ru.azmeev.bank.account.service.UserService;
-import ru.azmeev.bank.account.web.dto.UserDto;
-import ru.azmeev.bank.account.web.dto.UserEditAccountsDto;
-import ru.azmeev.bank.account.web.dto.UserEditPasswordDto;
-import ru.azmeev.bank.account.web.dto.UserRegistrationDto;
+import ru.azmeev.bank.account.web.dto.*;
 import ru.azmeev.bank.account.web.mapper.UserMapper;
 
 import java.math.BigDecimal;
@@ -33,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByLogin(String login) {
         return userMapper.toDto(userRepository.findByLogin(login)
-                .orElseThrow(IllegalArgumentException::new));
+                .orElse(null));
     }
 
     @Override
@@ -84,6 +82,31 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(user);
         updateAccounts(user, dto.getAccount());
+    }
+
+    @Override
+    @Transactional
+    public Boolean cash(CashActionRequest dto) {
+        UserEntity user = userRepository.findByLogin(dto.getLogin())
+                .orElseThrow(IllegalArgumentException::new);
+        AccountEntity account = user.getAccounts().stream()
+                .filter(x -> x.getCurrency().getName().equals(dto.getCurrency()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (dto.getAction().equals(CashAction.GET)) {
+            if (account.getValue().compareTo(dto.getValue()) > 0) {
+                account.setValue(account.getValue().subtract(dto.getValue()));
+                accountRepository.save(account);
+                return true;
+            }
+        } else if (dto.getAction().equals(CashAction.PUT)) {
+            account.setValue(account.getValue().add(dto.getValue()));
+            accountRepository.save(account);
+            return true;
+        }
+
+        return false;
     }
 
     private void updateAccounts(UserEntity user, List<String> names) {
