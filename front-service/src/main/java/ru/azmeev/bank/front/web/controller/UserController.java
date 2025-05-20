@@ -108,9 +108,9 @@ public class UserController {
 
     @PostMapping("/transfer")
     public String transfer(@AuthenticationPrincipal User currentUser,
-                           BindingResult bindingResult,
                            @Valid UserTransferDto dto,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes,
+                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String attribute = dto.getToLogin().equals(currentUser.getLogin()) ? "transferErrors" : "transferOtherErrors";
             redirectAttributes.addFlashAttribute(attribute, getValidationErrors(bindingResult));

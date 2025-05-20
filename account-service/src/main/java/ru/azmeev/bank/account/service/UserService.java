@@ -17,4 +17,6 @@ public interface UserService {
     void editAccounts(UserEditAccountsDto dto);
 
     Boolean cash(CashActionRequest dto);
+
+    Boolean transfer(AccountTransferRequestDto dto);
 }

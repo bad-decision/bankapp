@@ -39,6 +39,11 @@ public class UserController {
         return userService.cash(dto);
     }
 
+    @PostMapping("/transfer")
+    public Boolean transfer(@RequestBody AccountTransferRequestDto dto) {
+        return userService.transfer(dto);
+    }
+
     @GetMapping("/{login}/usersToTransfer")
     public List<UserDto> getUsersToTransfer(@PathVariable String login) {
         return userService.getUsersToTransfer(login);

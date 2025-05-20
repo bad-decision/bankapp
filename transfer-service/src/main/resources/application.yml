@@ -1,6 +1,6 @@
 spring:
   application:
-    name: front-service
+    name: transfer-service
   security:
     oauth2:
       client:
@@ -11,22 +11,22 @@ spring:
           keycloak:
             authorizationGrantType: client_credentials
             provider: keycloak
-            client-id: front-service
-            client-secret: ${CLIENT_SECRET:eTI5yoY93m9nZj2FRDRKSyIxocTEfAaO}
+            client-id: transfer-service
+            client-secret: ${CLIENT_SECRET:5CW9tuhQgl3mIMKvYarcOn8JRt4g8fGF}
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             scope: openid, profile, email
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8090/realms/master
 server:
-  port: 8010
+  port: 8040
 
 service:
   account:
     url: http://localhost:8020
-  cash:
-    url: http://localhost:8030
   exchange:
     url: http://localhost:8050
-  transfer:
-    url: http://localhost:8040
+  blocker:
+    url: http://localhost:8070
+  notification:
+    url: http://localhost:8080

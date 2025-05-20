@@ -12,6 +12,6 @@ public class BlockerServiceImpl implements BlockerService {
 
     @Override
     public boolean verifyOperation() {
-        return (new Random()).nextBoolean();
+        return true; //(new Random()).nextBoolean();
     }
 }

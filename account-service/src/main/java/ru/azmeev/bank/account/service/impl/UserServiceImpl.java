@@ -109,6 +109,31 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    @Transactional
+    public Boolean transfer(AccountTransferRequestDto dto) {
+        UserEntity fromUser = userRepository.findByLogin(dto.getFromLogin())
+                .orElseThrow(IllegalArgumentException::new);
+        AccountEntity fromAccount = fromUser.getAccounts().stream()
+                .filter(x -> x.getCurrency().getName().equals(dto.getFromCurrency()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        UserEntity toUser = userRepository.findByLogin(dto.getToLogin())
+                .orElseThrow(IllegalArgumentException::new);
+        AccountEntity toAccount = toUser.getAccounts().stream()
+                .filter(x -> x.getCurrency().getName().equals(dto.getToCurrency()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (fromAccount.getValue().compareTo(dto.getFromValue()) > 0) {
+            fromAccount.setValue(fromAccount.getValue().subtract(dto.getFromValue()));
+            toAccount.setValue(toAccount.getValue().add(dto.getToValue()));
+            accountRepository.saveAll(List.of(fromAccount, toAccount));
+            return true;
+        }
+        return false;
+    }
+
     private void updateAccounts(UserEntity user, List<String> names) {
         List<CurrencyEntity> currency = currencyRepository.getCurrency(names);
 
