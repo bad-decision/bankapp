@@ -24,8 +24,8 @@ server:
 
 service:
   account:
-    url: http://localhost:8020
+    url: lb://gateway-service/account
   blocker:
-    url: http://localhost:8070
+    url: lb://gateway-service/blocker
   notifications:
-    url: http://localhost:8080
+    url: lb://gateway-service/notification

@@ -1,6 +1,7 @@
 package ru.azmeev.bank.transfer.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -35,12 +36,17 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public RestClient restClient(RestClient.Builder builder,
-                                 OAuth2AuthorizedClientManager authorizedClientManager) {
+    public RestClient restClient(RestClient.Builder builder) {
+        return builder.build();
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
         OAuth2ClientHttpRequestInterceptor requestInterceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
 
-        return builder.requestInterceptor(requestInterceptor).build();
+        return RestClient.builder().requestInterceptor(requestInterceptor);
     }
 
     @Bean

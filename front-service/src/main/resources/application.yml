@@ -23,10 +23,10 @@ server:
 
 service:
   account:
-    url: http://localhost:8020
+    url: lb://gateway-service/account
   cash:
-    url: http://localhost:8030
+    url: lb://gateway-service/cash
   exchange:
-    url: http://localhost:8050
+    url: lb://gateway-service/exchange
   transfer:
-    url: http://localhost:8040
+    url: lb://gateway-service/transfer
