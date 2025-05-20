@@ -1,26 +1,10 @@
 spring:
   application:
     name: exchange-generator-service
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8090/realms/master
-        registration:
-          keycloak:
-            authorizationGrantType: client_credentials
-            provider: keycloak
-            client-id: exchange-generator-service
-            client-secret: ${CLIENT_SECRET:WWjquJ7Uz2owLuo0v6Ptibn2jZ288B80}
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
-            scope: openid, profile, email
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/realms/master
-server:
-  port: 8060
-
-service:
-  exchange:
-    url: lb://gateway-service/exchange
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service

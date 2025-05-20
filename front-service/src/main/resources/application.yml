@@ -1,32 +1,10 @@
 spring:
   application:
     name: front-service
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8090/realms/master
-        registration:
-          keycloak:
-            authorizationGrantType: client_credentials
-            provider: keycloak
-            client-id: front-service
-            client-secret: ${CLIENT_SECRET:eTI5yoY93m9nZj2FRDRKSyIxocTEfAaO}
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
-            scope: openid, profile, email
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/realms/master
-server:
-  port: 8010
-
-service:
-  account:
-    url: lb://gateway-service/account
-  cash:
-    url: lb://gateway-service/cash
-  exchange:
-    url: lb://gateway-service/exchange
-  transfer:
-    url: lb://gateway-service/transfer
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service

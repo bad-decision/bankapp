@@ -1,10 +1,10 @@
 spring:
   application:
     name: blocker-service
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/realms/master
-server:
-  port: 8070
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service

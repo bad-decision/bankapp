@@ -1,32 +1,10 @@
 spring:
   application:
     name: transfer-service
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8090/realms/master
-        registration:
-          keycloak:
-            authorizationGrantType: client_credentials
-            provider: keycloak
-            client-id: transfer-service
-            client-secret: ${CLIENT_SECRET:5CW9tuhQgl3mIMKvYarcOn8JRt4g8fGF}
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
-            scope: openid, profile, email
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/realms/master
-server:
-  port: 8040
-
-service:
-  account:
-    url: lb://gateway-service/account
-  exchange:
-    url: lb://gateway-service/exchange
-  blocker:
-    url: lb://gateway-service/blocker
-  notification:
-    url: lb://gateway-service/notification
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
