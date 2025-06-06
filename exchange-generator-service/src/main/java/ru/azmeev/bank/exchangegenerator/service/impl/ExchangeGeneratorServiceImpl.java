@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.azmeev.bank.exchangegenerator.service.ExchangeGeneratorService;
+import ru.azmeev.bank.exchangegenerator.service.ExchangeService;
 import ru.azmeev.bank.exchangegenerator.web.dto.ExchangeRateDto;
 
 import java.math.BigDecimal;
@@ -17,21 +18,14 @@ import static org.springframework.security.oauth2.client.web.client.RequestAttri
 @RequiredArgsConstructor
 @Service
 public class ExchangeGeneratorServiceImpl implements ExchangeGeneratorService {
-
-    @Value("${service.exchange.url}")
-    private String exchangeUrl;
-    private final RestClient restClient;
+    private final ExchangeService exchangeService;
     private final Random random = new Random();
 
     @Scheduled(fixedRate = 1000)
+    @Override
     public void generateRates() {
         try {
-            restClient.post()
-                    .uri(exchangeUrl + "/api/exchange/rate")
-                    .body(getRates())
-                    .attributes(clientRegistrationId("keycloak"))
-                    .retrieve()
-                    .body(Void.class);
+            exchangeService.saveRates(getRates());
         } catch (Exception e) {
             System.err.println("Error sending request: " + e.getMessage());
         }

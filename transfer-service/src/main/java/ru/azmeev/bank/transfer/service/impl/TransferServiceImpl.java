@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import ru.azmeev.bank.transfer.service.BlockerService;
+import ru.azmeev.bank.transfer.service.ExchangeService;
+import ru.azmeev.bank.transfer.service.NotificationService;
 import ru.azmeev.bank.transfer.service.TransferService;
 import ru.azmeev.bank.transfer.web.dto.AccountTransferRequestDto;
 import ru.azmeev.bank.transfer.web.dto.TransferRequestDto;
@@ -19,31 +22,18 @@ public class TransferServiceImpl implements TransferService {
 
     @Value("${service.account.url}")
     private String accountUrl;
-    @Value("${service.exchange.url}")
-    private String exchangeUrl;
-    @Value("${service.blocker.url}")
-    private String blockerUrl;
-    @Value("${service.notification.url}")
-    private String notificationUrl;
     private final RestClient restClient;
+    private final BlockerService blockerService;
+    private final ExchangeService exchangeService;
+    private final NotificationService notificationService;
 
     @Override
     public boolean transfer(TransferRequestDto dto) {
-        Boolean isAllowed = restClient.post()
-                .uri(blockerUrl + "/api/blocker/verify")
-                .body(dto)
-                .attributes(clientRegistrationId("keycloak"))
-                .retrieve()
-                .body(Boolean.class);
+        boolean isAllowed = blockerService.verifyOperation(dto);
 
         TransferResultDto transferResultDto;
         if (isAllowed) {
-            BigDecimal toValue = restClient.post()
-                    .uri(exchangeUrl + "/api/exchange/convert")
-                    .body(dto)
-                    .attributes(clientRegistrationId("keycloak"))
-                    .retrieve()
-                    .body(BigDecimal.class);
+            BigDecimal toValue = exchangeService.exchange(dto);
 
             AccountTransferRequestDto accountTransferRequestDto = AccountTransferRequestDto.builder()
                     .toCurrency(dto.getToCurrency())
@@ -54,12 +44,7 @@ public class TransferServiceImpl implements TransferService {
                     .toValue(toValue)
                     .build();
 
-            Boolean transferResult = restClient.post()
-                    .uri(accountUrl + "/api/user/transfer")
-                    .body(accountTransferRequestDto)
-                    .attributes(clientRegistrationId("keycloak"))
-                    .retrieve()
-                    .body(Boolean.class);
+            Boolean transferResult = transferInternal(accountTransferRequestDto);
 
             transferResultDto = TransferResultDto.builder()
                     .success(transferResult)
@@ -73,13 +58,17 @@ public class TransferServiceImpl implements TransferService {
                     .build();
         }
 
-        restClient.post()
-                .uri(notificationUrl + "/api/notification/transfer")
-                .body(transferResultDto)
-                .attributes(clientRegistrationId("keycloak"))
-                .retrieve()
-                .body(Void.class);
+        notificationService.notify(transferResultDto);
 
         return transferResultDto.getSuccess();
+    }
+
+    private Boolean transferInternal(AccountTransferRequestDto accountTransferRequestDto) {
+        return restClient.post()
+                .uri(accountUrl + "/api/user/transfer")
+                .body(accountTransferRequestDto)
+                .attributes(clientRegistrationId("keycloak"))
+                .retrieve()
+                .body(Boolean.class);
     }
 }

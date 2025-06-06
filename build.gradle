@@ -18,10 +18,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'checkstyle'
-
-    if (project.name.contains('-service') || project.name.contains('-application')) {
-        apply plugin: 'org.springframework.boot'
-    }
+    apply plugin: 'org.springframework.boot'
 
     java {
         toolchain {
