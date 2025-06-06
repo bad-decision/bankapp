@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.azmeev.bank.front.service.TransferService;
-import ru.azmeev.bank.front.web.dto.CashActionResult;
 import ru.azmeev.bank.front.web.dto.UserTransferDto;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;

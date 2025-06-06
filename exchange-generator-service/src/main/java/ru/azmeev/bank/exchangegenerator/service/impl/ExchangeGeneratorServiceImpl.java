@@ -1,10 +1,8 @@
 package ru.azmeev.bank.exchangegenerator.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import ru.azmeev.bank.exchangegenerator.service.ExchangeGeneratorService;
 import ru.azmeev.bank.exchangegenerator.service.ExchangeService;
 import ru.azmeev.bank.exchangegenerator.web.dto.ExchangeRateDto;
@@ -12,8 +10,6 @@ import ru.azmeev.bank.exchangegenerator.web.dto.ExchangeRateDto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
-
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
 @RequiredArgsConstructor
 @Service

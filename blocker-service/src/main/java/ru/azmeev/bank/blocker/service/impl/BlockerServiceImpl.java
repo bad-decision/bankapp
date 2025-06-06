@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.azmeev.bank.blocker.service.BlockerService;
 
-import java.util.Random;
-
 @Service
 @RequiredArgsConstructor
 public class BlockerServiceImpl implements BlockerService {
