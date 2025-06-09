@@ -1,0 +1,332 @@
+services:
+  eureka-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: eureka-service/Dockerfile
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - bank
+
+  config-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: config-service/Dockerfile
+    container_name: config-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+    ports:
+      - "8888:8888"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - bank
+
+  gateway-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    container_name: gateway-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+    ports:
+      - "8200:8200"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+    networks:
+      - bank
+
+  account-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: account-service/Dockerfile
+    container_name: account-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://account-postgres:5432/account
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8020:8020"
+    depends_on:
+      account-postgres:
+        condition: service_started
+      config-service:
+        condition: service_healthy
+      eureka-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  account-postgres:
+    restart: always
+    image: postgres:16.1
+    container_name: account-postgres
+    environment:
+      POSTGRES_USER: ${SHOP_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${SHOP_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${SHOP_DB_NAME:-account}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
+    volumes:
+      - account-volume-postgres:/var/lib/postgresql/data
+    networks:
+      - bank
+
+  cash-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: cash-service/Dockerfile
+    container_name: cash-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8030:8030"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  front-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: front-service/Dockerfile
+    container_name: front-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8010:8010"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  notification-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: notification-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8080:8080"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  transfer-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: transfer-service/Dockerfile
+    container_name: transfer-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8040:8040"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  exchange-service-generator:
+    restart: always
+    build:
+      context: .
+      dockerfile: exchange-generator-service/Dockerfile
+    container_name: exchange-service-generator
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8060:8060"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      exchange-service:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  exchange-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: exchange-service/Dockerfile
+    container_name: exchange-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://exchange-postgres:5432/exchange
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8050:8050"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      exchange-postgres:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - bank
+
+  exchange-postgres:
+    restart: always
+    image: postgres:16.1
+    container_name: exchange-postgres
+    environment:
+      POSTGRES_USER: ${SHOP_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${SHOP_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${SHOP_DB_NAME:-exchange}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
+    volumes:
+      - exchange-volume-postgres:/var/lib/postgresql/data
+    networks:
+      - bank
+
+  blocker-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: blocker-service/Dockerfile
+    container_name: blocker-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka-service:8761/eureka
+      ISSUER_URI: http://bank-keycloak:8090/realms/master
+    ports:
+      - "8070:8070"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    networks:
+      - bank
+
+  keycloak:
+    restart: no
+    image: quay.io/keycloak/keycloak:26.1.2
+    container_name: bank-keycloak
+    environment:
+      KC_IMPORT: ./master-realm.json
+      KC_HOSTNAME: bank-keycloak
+      KC_PROXY: edge
+      KC_DB: postgres
+      KC_HTTP_PORT: 8090
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+    command: ["start", "--import-realm"]
+    depends_on:
+      - keycloak-postgres
+    networks:
+      - bank
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8090/realms/master" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    ports:
+      - "8090:8090"
+
+  keycloak-postgres:
+    image: postgres:16.1
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - kc-volume-postgres:/var/lib/postgresql/data
+    networks:
+      - bank
+
+volumes:
+  account-volume-postgres:
+  exchange-volume-postgres:
+  kc-volume-postgres:
+
+networks:
+  bank:

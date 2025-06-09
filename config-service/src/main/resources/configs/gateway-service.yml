@@ -60,7 +60,3 @@ cloud:
   exchange-generator-service-url: lb://exchange-generator-service
   blocker-service-url: lb://blocker-service
   notification-service-url: lb://notification-service
-
-logging:
-  level:
-    org.springframework.cloud.gateway: TRACE

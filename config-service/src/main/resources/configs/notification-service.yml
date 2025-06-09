@@ -3,6 +3,6 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8090/realms/master
+          issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
 server:
   port: 8080

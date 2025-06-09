@@ -11,20 +11,8 @@ spring:
     show-sql: true
   security:
     oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8090/realms/master
-        registration:
-          keycloak:
-            authorizationGrantType: client_credentials
-            provider: keycloak
-            client-id: account-service
-            client-secret: ${CLIENT_SECRET:DYs0kSOoYyxMQVFg3yiprnueJ87C5AwL}
-            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
-            scope: openid, profile, email
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8090/realms/master
+          issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
 server:
   port: 8020
