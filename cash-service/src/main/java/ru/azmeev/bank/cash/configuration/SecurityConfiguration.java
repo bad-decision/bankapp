@@ -1,7 +1,6 @@
 package ru.azmeev.bank.cash.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -41,7 +40,6 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    @LoadBalanced
     public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
         OAuth2ClientHttpRequestInterceptor requestInterceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);

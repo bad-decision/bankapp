@@ -13,5 +13,4 @@ public class ExchangeGeneratorServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ExchangeGeneratorServiceApplication.class, args);
     }
-
 }

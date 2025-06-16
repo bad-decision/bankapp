@@ -1,0 +1,14 @@
+spring:
+  config:
+    import: "optional:./local-config.yml"
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      fail-fast: false
+      enabled: false
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false

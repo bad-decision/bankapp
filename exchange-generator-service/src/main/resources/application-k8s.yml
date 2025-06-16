@@ -1,0 +1,14 @@
+spring:
+  config:
+    import: "optional:configmap:bankapp-exchange-generator-service"
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      fail-fast: false
+      enabled: false
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
