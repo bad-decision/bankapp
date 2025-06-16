@@ -1,0 +1,71 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "bank-microservices.fullname" . }}-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bankapp.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bankapp-front-service
+                port:
+                  number: 80
+    - host: gateway
+      http:
+        paths:
+          - path: /account-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-account-service
+                port:
+                  number: 8020
+          - path: /cash-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-cash-service
+                port:
+                  number: 8030
+          - path: /transfer-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-transfer-service
+                port:
+                  number: 8040
+          - path: /exchange-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-exchange-service
+                port:
+                  number: 8050
+          - path: /exchange-generator-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-exchange-generator-service
+                port:
+                  number: 8060
+          - path: /blocker-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-blocker-service
+                port:
+                  number: 8070
+          - path: /notification-service(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bankapp-notification-service
+                port:
+                  number: 8080

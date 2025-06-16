@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cash-service.fullname" . }}
+  labels:
+    {{- include "cash-service.labels" . | nindent 4 }}
+data:
+  SPRING_PROFILES_ACTIVE: k8s
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_AUTHORIZATION_GRANT_TYPE: client_credentials
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_PROVIDER: keycloak
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_REDIRECT_URI: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_SCOPE: openid, profile, email
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
+  SERVER_PORT: "{{ .Values.service.port }}"
+  SERVICE_ACCOUNT_URL: "{{ .Values.global.services.account.url }}"
+  SERVICE_NOTIFICATIONS_URL: "{{ .Values.global.services.notification.url }}"
+  SERVICE_BLOCKER_URL: "{{ .Values.global.services.blocker.url }}"

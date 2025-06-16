@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "notification-service.fullname" . }}-healthtest
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+  labels:
+    {{- include "notification-service.labels" . | nindent 4 }}
+spec:
+  containers:
+  - name: auth-test
+    image: curlimages/curl:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        TOKEN=$(curl -s -X POST \
+          -H "Content-Type: application/x-www-form-urlencoded" \
+          -d "client_id={{ .Values.global.test.keycloak.clientId }}" \
+          -d "client_secret={{ .Values.global.test.keycloak.clientSecret }}" \
+          -d "grant_type=client_credentials" \
+          "{{ .Values.global.services.keycloak.url }}/protocol/openid-connect/token" | jq -r '.access_token')
+        
+        curl -H "Authorization: Bearer $TOKEN" \
+             http://{{ include "notification-service.fullname" . }}:{{ .Values.service.port }}/actuator/health
+  restartPolicy: Never

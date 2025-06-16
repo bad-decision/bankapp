@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-keycloak-realm
+  labels:
+    {{- include "bank-keycloak.labels" . | nindent 4 }}
+data:
+  master-realm.json: |-
+    {{ .Files.Get "files/master-realm.json" | nindent 4 }}

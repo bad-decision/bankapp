@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: cash-service
+  pullPolicy: IfNotPresent
+  tag: "0.0.1-SNAPSHOT"
+
+service:
+  type: ClusterIP
+  port: 80
+
+secrets:
+  keycloak:
+    clientId: "cash-service"
+    clientSecret: "I0StlCY5tNJTvaIbPJdiMBgGtmIR5yN1"

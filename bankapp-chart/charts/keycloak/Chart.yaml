@@ -1,0 +1,10 @@
+apiVersion: v2
+name: keycloak
+description: Keycloak chart
+version: 1.0.0
+appVersion: "26.1"
+dependencies:
+  - name: keycloak
+    version: "24.7.2"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: keycloak.enabled

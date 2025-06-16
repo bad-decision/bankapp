@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: exchange-service
+  pullPolicy: IfNotPresent
+  tag: "0.0.1-SNAPSHOT"
+
+service:
+  type: ClusterIP
+  port: 80
+
+exchange-postgres:
+  enabled: true
+  auth:
+    database: exchange
+    username: postgres
+    password: "postgres"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+secrets:
+  keycloak:
+    clientId: "exchange-service"
+    clientSecret: "YF7ee06fM9OKnrGOt0HxgL12qc7VgdSO"
+  database:
+    username: "postgres"
+    password: "postgres"
+    url: "jdbc:postgresql://bankapp-exchange-postgres:5432/exchange"

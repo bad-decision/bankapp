@@ -1,0 +1,20 @@
+global:
+  services:
+    keycloak:
+      url: "http://bankapp-keycloak:8090/realms/master"
+    account:
+      url: "http://bankapp-account-service"
+    exchange:
+      url: "http://bankapp-exchange-service"
+    notification:
+      url: "http://bankapp-notification-service"
+    blocker:
+      url: "http://bankapp-blocker-service"
+    transfer:
+      url: "http://bankapp-transfer-service"
+    cash:
+      url: "http://bankapp-cash-service"
+  test:
+    keycloak:
+      clientId: "transfer-service"
+      clientSecret: "5CW9tuhQgl3mIMKvYarcOn8JRt4g8fGF"

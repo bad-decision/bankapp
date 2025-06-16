@@ -1,0 +1,32 @@
+keycloak:
+  enabled: true
+  auth:
+    adminUser: "admin"
+    adminPassword: "admin"
+
+  extraVolumes: |
+    - name: realm-config
+      configMap:
+        name: {{ .Release.Name }}-keycloak-realm
+
+  extraVolumeMounts: |
+    - name: realm-config
+      mountPath: /opt/bitnami/keycloak/data/import
+
+  extraEnvVars:
+    - name: KEYCLOAK_IMPORT
+      value: /opt/bitnami/keycloak/data/import/master-realm.json
+    - name: KEYCLOAK_EXTRA_ARGS
+      value: "--import-realm"
+
+  service:
+    type: ClusterIP
+    ports:
+      http: 8090
+
+  postgresql:
+    enabled: true
+    auth:
+      username: keycloak
+      password: "dbpassword"
+      database: keycloak

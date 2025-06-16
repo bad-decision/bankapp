@@ -1,0 +1,33 @@
+apiVersion: v2
+name: bank-microservices
+description: Umbrella chart for Bank application microservices
+appVersion: "1.0.0"
+version: 1.0.0
+dependencies:
+  - name: front-service
+    version: 1.0.0
+    repository: file://charts/front-service
+  - name: keycloak
+    version: 1.0.0
+    repository: file://charts/keycloak
+  - name: blocker-service
+    version: 1.0.0
+    repository: file://charts/blocker-service
+  - name: notification-service
+    version: 1.0.0
+    repository: file://charts/notification-service
+  - name: cash-service
+    version: 1.0.0
+    repository: file://charts/cash-service
+  - name: account-service
+    version: 1.0.0
+    repository: file://charts/account-service
+  - name: transfer-service
+    version: 1.0.0
+    repository: file://charts/transfer-service
+  - name: exchange-service
+    version: 1.0.0
+    repository: file://charts/exchange-service
+  - name: exchange-generator-service
+    version: 1.0.0
+    repository: file://charts/exchange-generator-service
