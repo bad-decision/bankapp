@@ -18,9 +18,20 @@
 - PostgreSQL
 - Keycloak
 
-Запуск приложения:
+Предварительная настройка:
+- minikube start
+- minikube tunnel
+- заполнить файл jenkins/.env, указав конфиг для подключения к minikube, токены для подключения к github
+
+Запуск Jenkins приложения:
 ```
+cd jenkins
 docker compose up
 ```
 
-- После запуска приложение доступно по адресу: http://localhost:8010
+- После запуска Jenkins доступен по адресу: http://localhost:8080
+- Jenkins после запуска имеет pipeline настроенный на github репозиторий, производит сборку проекта, 
+сборку docker образов, публикацию docker образов в registry и развёртывание проекта в локальном minikube.
+- После деплоя в minikube, проект доступен по адресу: http://bankapp-test.local и http://bankapp-prod.local, которые необходимо добавить в файл hosts
+
+![img.png](img.png)
