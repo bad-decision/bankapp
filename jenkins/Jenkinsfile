@@ -105,11 +105,13 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
                     sh """
+                        kubectl create namespace test --dry-run=client -o yaml | kubectl apply -f -
+
                         kubectl create secret docker-registry ghcr-secret \
                           --docker-server=$DOCKER_REGISTRY \
                           --docker-username=$GITHUB_USERNAME \
                           --docker-password=$GHCR_TOKEN \
-                          --namespace=test --create-namespace \
+                          --namespace=test \
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         helm upgrade --install bankapp bankapp-chart \\
@@ -145,11 +147,13 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
                     sh """
+                        kubectl create namespace prod --dry-run=client -o yaml | kubectl apply -f -
+                        
                         kubectl create secret docker-registry ghcr-secret \
                           --docker-server=$DOCKER_REGISTRY \
                           --docker-username=$GITHUB_USERNAME \
                           --docker-password=$GHCR_TOKEN \
-                          --namespace=prod --create-namespace \
+                          --namespace=prod \
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         helm upgrade --install bankapp bankapp-chart \\
