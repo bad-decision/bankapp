@@ -12,57 +12,56 @@ pipeline {
             parallel {
                 stage('Account Service') {
                     steps {
-                        dir('.') {
-                            sh 'gradle :account-service:clean :account-service:build'
-                        }
+                        sh 'chmod +x gradlew'
+                        sh './gradlew :account-service:clean :account-service:build'
                     }
                 }
                 stage('Blocker Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :blocker-service:clean :blocker-service:build'
+                            sh './gradlew :blocker-service:clean :blocker-service:build'
                         }
                     }
                 }
                 stage('Cash Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :cash-service:clean :cash-service:build'
+                            sh './gradlew :cash-service:clean :cash-service:build'
                         }
                     }
                 }
                 stage('Exchange-generator Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :exchange-generator-service:clean :exchange-generator-service:build'
+                            sh './gradlew :exchange-generator-service:clean :exchange-generator-service:build'
                         }
                     }
                 }
                 stage('Exchange Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :exchange-service:clean :exchange-service:build'
+                            sh './gradlew :exchange-service:clean :exchange-service:build'
                         }
                     }
                 }
                 stage('Front Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :front-service:clean :front-service:build'
+                            sh './gradlew :front-service:clean :front-service:build'
                         }
                     }
                 }
                 stage('Notification Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :notification-service:clean :notification-service:build'
+                            sh './gradlew :notification-service:clean :notification-service:build'
                         }
                     }
                 }
                 stage('Transfer Service') {
                     steps {
                         dir('.') {
-                            sh 'gradle :transfer-service:clean :transfer-service:build'
+                            sh './gradlew :transfer-service:clean :transfer-service:build'
                         }
                     }
                 }
@@ -104,26 +103,35 @@ pipeline {
 
         stage('Helm Deploy to TEST') {
             steps {
-                sh """
-                helm upgrade --install bankapp bankapp-chart \\
-                  --namespace test --create-namespace \\
-                  --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
-                  --set account-service.image.tag=${IMAGE_TAG} \\
-                  --set blocker-service.image.repository=${DOCKER_REGISTRY}/blocker-service \\
-                  --set blocker-service.image.tag=${IMAGE_TAG} \\
-                  --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
-                  --set cash-service.image.tag=${IMAGE_TAG} \\
-                  --set exchange-generator-service.image.repository=${DOCKER_REGISTRY}/exchange-generator-service \\
-                  --set exchange-generator-service.image.tag=${IMAGE_TAG} \\
-                  --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
-                  --set exchange-service.image.tag=${IMAGE_TAG} \\
-                  --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
-                  --set notification-service.image.tag=${IMAGE_TAG} \\
-                  --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
-                  --set transfer-service.image.tag=${IMAGE_TAG} \\
-                  --set front-service.image.repository=${DOCKER_REGISTRY}/front-service \\
-                  --set front-service.image.tag=${IMAGE_TAG} \\
-                """
+                withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
+                    sh """
+                        kubectl create secret docker-registry ghcr-secret \
+                          --docker-server=$DOCKER_REGISTRY \
+                          --docker-username=$GITHUB_USERNAME \
+                          --docker-password=$GHCR_TOKEN \
+                          --namespace=test \
+                          --dry-run=client -o yaml | kubectl apply -f -
+
+                        helm upgrade --install bankapp bankapp-chart \\
+                          --namespace test --create-namespace \\
+                          --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
+                          --set account-service.image.tag=${IMAGE_TAG} \\
+                          --set blocker-service.image.repository=${DOCKER_REGISTRY}/blocker-service \\
+                          --set blocker-service.image.tag=${IMAGE_TAG} \\
+                          --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
+                          --set cash-service.image.tag=${IMAGE_TAG} \\
+                          --set exchange-generator-service.image.repository=${DOCKER_REGISTRY}/exchange-generator-service \\
+                          --set exchange-generator-service.image.tag=${IMAGE_TAG} \\
+                          --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                          --set exchange-service.image.tag=${IMAGE_TAG} \\
+                          --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
+                          --set notification-service.image.tag=${IMAGE_TAG} \\
+                          --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                          --set transfer-service.image.tag=${IMAGE_TAG} \\
+                          --set front-service.image.repository=${DOCKER_REGISTRY}/front-service \\
+                          --set front-service.image.tag=${IMAGE_TAG} \\
+                    """
+                }
             }
         }
 
@@ -135,26 +143,35 @@ pipeline {
 
         stage('Helm Deploy to PROD') {
             steps {
-                sh """
-                helm upgrade --install bankapp bankapp-chart \\
-                  --namespace prod --create-namespace \\
-                  --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
-                  --set account-service.image.tag=${IMAGE_TAG} \\
-                  --set blocker-service.image.repository=${DOCKER_REGISTRY}/blocker-service \\
-                  --set blocker-service.image.tag=${IMAGE_TAG} \\
-                  --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
-                  --set cash-service.image.tag=${IMAGE_TAG} \\
-                  --set exchange-generator-service.image.repository=${DOCKER_REGISTRY}/exchange-generator-service \\
-                  --set exchange-generator-service.image.tag=${IMAGE_TAG} \\
-                  --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
-                  --set exchange-service.image.tag=${IMAGE_TAG} \\
-                  --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
-                  --set notification-service.image.tag=${IMAGE_TAG} \\
-                  --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
-                  --set transfer-service.image.tag=${IMAGE_TAG} \\
-                  --set front-service.image.repository=${DOCKER_REGISTRY}/front-service \\
-                  --set front-service.image.tag=${IMAGE_TAG} \\
-                """
+                withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
+                    sh """
+                        kubectl create secret docker-registry ghcr-secret \
+                          --docker-server=$DOCKER_REGISTRY \
+                          --docker-username=$GITHUB_USERNAME \
+                          --docker-password=$GHCR_TOKEN \
+                          --namespace=prod \
+                          --dry-run=client -o yaml | kubectl apply -f -
+
+                        helm upgrade --install bankapp bankapp-chart \\
+                          --namespace prod --create-namespace \\
+                          --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
+                          --set account-service.image.tag=${IMAGE_TAG} \\
+                          --set blocker-service.image.repository=${DOCKER_REGISTRY}/blocker-service \\
+                          --set blocker-service.image.tag=${IMAGE_TAG} \\
+                          --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
+                          --set cash-service.image.tag=${IMAGE_TAG} \\
+                          --set exchange-generator-service.image.repository=${DOCKER_REGISTRY}/exchange-generator-service \\
+                          --set exchange-generator-service.image.tag=${IMAGE_TAG} \\
+                          --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                          --set exchange-service.image.tag=${IMAGE_TAG} \\
+                          --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
+                          --set notification-service.image.tag=${IMAGE_TAG} \\
+                          --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                          --set transfer-service.image.tag=${IMAGE_TAG} \\
+                          --set front-service.image.repository=${DOCKER_REGISTRY}/front-service \\
+                          --set front-service.image.tag=${IMAGE_TAG} \\
+                    """
+                }
             }
         }
     }

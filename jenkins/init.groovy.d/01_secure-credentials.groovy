@@ -12,7 +12,6 @@ def githubUsername = env['GITHUB_USERNAME']
 def githubToken = env['GITHUB_TOKEN']
 def ghcrToken = env['GHCR_TOKEN']
 def dockerRegistry = env['DOCKER_REGISTRY']
-def dbPassword = env['DB_PASSWORD']
 
 // Получаем хранилище учётных данных
 def store = Jenkins.instance.getExtensionList(
