@@ -109,7 +109,7 @@ pipeline {
                           --docker-server=$DOCKER_REGISTRY \
                           --docker-username=$GITHUB_USERNAME \
                           --docker-password=$GHCR_TOKEN \
-                          --namespace=test \
+                          --namespace=test --create-namespace \
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         helm upgrade --install bankapp bankapp-chart \\
@@ -149,7 +149,7 @@ pipeline {
                           --docker-server=$DOCKER_REGISTRY \
                           --docker-username=$GITHUB_USERNAME \
                           --docker-password=$GHCR_TOKEN \
-                          --namespace=prod \
+                          --namespace=prod --create-namespace \
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         helm upgrade --install bankapp bankapp-chart \\
