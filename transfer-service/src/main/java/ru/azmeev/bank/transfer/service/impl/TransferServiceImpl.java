@@ -13,6 +13,7 @@ import ru.azmeev.bank.transfer.web.dto.TransferRequestDto;
 import ru.azmeev.bank.transfer.web.dto.TransferResultDto;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
 
@@ -47,12 +48,14 @@ public class TransferServiceImpl implements TransferService {
             Boolean transferResult = transferInternal(accountTransferRequestDto);
 
             transferResultDto = TransferResultDto.builder()
+                    .id(UUID.randomUUID())
                     .success(transferResult)
                     .message(transferResult ? "Transfer operation was successfully" : "Transfer operation was not successfully")
                     .build();
 
         } else {
             transferResultDto = TransferResultDto.builder()
+                    .id(UUID.randomUUID())
                     .success(false)
                     .message("Transfer operation is not allowed")
                     .build();

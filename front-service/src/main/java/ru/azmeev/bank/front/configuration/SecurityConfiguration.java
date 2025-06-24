@@ -1,8 +1,10 @@
 package ru.azmeev.bank.front.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -63,12 +65,22 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    @LoadBalanced
+    @Profile("!k8s")
+    public RestClient.Builder loadBalancedRestClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
+        OAuth2ClientHttpRequestInterceptor requestInterceptor =
+                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+
+        return RestClient.builder().requestInterceptor(requestInterceptor);
+    }
+
+    @Bean
+    @Profile("k8s")
     public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
         OAuth2ClientHttpRequestInterceptor requestInterceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
 
-        return RestClient.builder()
-                .requestInterceptor(requestInterceptor);
+        return RestClient.builder().requestInterceptor(requestInterceptor);
     }
 
     @Bean

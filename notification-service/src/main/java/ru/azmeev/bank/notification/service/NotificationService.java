@@ -1,7 +1,7 @@
 package ru.azmeev.bank.notification.service;
 
-import ru.azmeev.bank.notification.web.dto.CashActionResult;
-import ru.azmeev.bank.notification.web.dto.TransferActionResult;
+import ru.azmeev.bank.notification.dto.CashActionResult;
+import ru.azmeev.bank.notification.dto.TransferActionResult;
 
 public interface NotificationService {
 

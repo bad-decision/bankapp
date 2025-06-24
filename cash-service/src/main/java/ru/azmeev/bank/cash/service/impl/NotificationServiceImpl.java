@@ -2,27 +2,22 @@ package ru.azmeev.bank.cash.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import ru.azmeev.bank.cash.service.NotificationService;
 import ru.azmeev.bank.cash.web.dto.CashActionResult;
 
-import static org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver.clientRegistrationId;
-
 @Service
 @RequiredArgsConstructor
+@Primary
 public class NotificationServiceImpl implements NotificationService {
-    @Value("${service.notifications.url}")
-    private String notificationsUrl;
-    private final RestClient restClient;
+    @Value("${kafka.topics.cash-notification}")
+    private String notificationTopic;
+    private final KafkaTemplate<String, CashActionResult> kafkaTemplate;
 
     @Override
     public void notify(CashActionResult cashActionResult) {
-        restClient.post()
-                .uri(notificationsUrl + "/api/notification/cash")
-                .body(cashActionResult)
-                .attributes(clientRegistrationId("keycloak"))
-                .retrieve()
-                .body(Void.class);
+        kafkaTemplate.send(notificationTopic, cashActionResult.getId().toString(), cashActionResult);
     }
 }

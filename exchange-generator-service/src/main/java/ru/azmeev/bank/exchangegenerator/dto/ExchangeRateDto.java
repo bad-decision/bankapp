@@ -1,4 +1,4 @@
-package ru.azmeev.bank.exchangegenerator.web.dto;
+package ru.azmeev.bank.exchangegenerator.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,17 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: 0
+      retries: 0
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      max-in-flight-requests: 1
+      properties:
+        spring:
+          json:
+            type:
+              mapping: exchangeRateList:ru.azmeev.bank.exchangegenerator.dto.ExchangeRateList
   security:
     oauth2:
       client:
@@ -17,8 +30,8 @@ spring:
         jwt:
           issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
 server:
-  port: 8060
+  port: 8061
 
-service:
-  exchange:
-    url: lb://gateway-service/exchange
+kafka:
+  topics:
+    exchange-topic: exchange-messages

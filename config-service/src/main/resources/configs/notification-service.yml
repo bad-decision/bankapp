@@ -1,8 +1,27 @@
 spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notification-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest
+      properties:
+        spring:
+          json:
+            type:
+              mapping: cashActionResult:ru.azmeev.bank.notification.dto.CashActionResult,transferActionResult:ru.azmeev.bank.notification.dto.TransferActionResult
+            trusted:
+              packages: "ru.azmeev.bank.*"
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
 server:
-  port: 8080
+  port: 8081
+
+kafka:
+  topics:
+    cash-notification: cash.notification.msg
+    transfer-notification: transfer.notification.msg

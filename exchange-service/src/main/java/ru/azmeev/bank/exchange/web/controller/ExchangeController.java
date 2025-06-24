@@ -21,11 +21,6 @@ public class ExchangeController {
         return exchangeService.getRates();
     }
 
-    @PostMapping("/rate")
-    public void updateRates(@RequestBody List<ExchangeRateDto> dto) {
-        exchangeService.updateRates(dto);
-    }
-
     @PostMapping("/convert")
     public BigDecimal convert(@RequestBody ExchangeConvertDto dto) {
         return exchangeService.convert(dto);

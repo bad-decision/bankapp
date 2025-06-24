@@ -5,7 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.azmeev.bank.exchangegenerator.service.ExchangeGeneratorService;
 import ru.azmeev.bank.exchangegenerator.service.ExchangeService;
-import ru.azmeev.bank.exchangegenerator.web.dto.ExchangeRateDto;
+import ru.azmeev.bank.exchangegenerator.dto.ExchangeRateDto;
 
 import java.math.BigDecimal;
 import java.util.List;

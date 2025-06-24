@@ -1,4 +1,14 @@
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: transferActionResult:ru.azmeev.bank.transfer.web.dto.TransferResultDto
   security:
     oauth2:
       client:
@@ -26,5 +36,7 @@ service:
     url: lb://gateway-service/exchange
   blocker:
     url: lb://gateway-service/blocker
-  notification:
-    url: lb://gateway-service/notification
+
+kafka:
+  topics:
+    transfer-notification: transfer.notification.msg

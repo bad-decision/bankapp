@@ -1,8 +1,10 @@
 package ru.azmeev.bank.cash.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,11 +37,23 @@ public class SecurityConfiguration {
     }
 
     @Bean
+
     public RestClient restClient(RestClient.Builder builder) {
         return builder.build();
     }
 
     @Bean
+    @LoadBalanced
+    @Profile("!k8s")
+    public RestClient.Builder loadBalancedRestClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
+        OAuth2ClientHttpRequestInterceptor requestInterceptor =
+                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+
+        return RestClient.builder().requestInterceptor(requestInterceptor);
+    }
+
+    @Bean
+    @Profile("k8s")
     public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
         OAuth2ClientHttpRequestInterceptor requestInterceptor =
                 new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);

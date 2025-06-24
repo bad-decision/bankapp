@@ -1,12 +1,15 @@
 package ru.azmeev.bank.exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.azmeev.bank.exchange.model.ExchangeRateEntity;
 import ru.azmeev.bank.exchange.repository.ExchangeRateRepository;
 import ru.azmeev.bank.exchange.service.ExchangeService;
 import ru.azmeev.bank.exchange.web.dto.ExchangeConvertDto;
 import ru.azmeev.bank.exchange.web.dto.ExchangeRateDto;
+import ru.azmeev.bank.exchange.web.dto.ExchangeRateList;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ExchangeServiceIml implements ExchangeService {
 
     private final ExchangeRateRepository exchangeRateRepository;
@@ -26,6 +30,15 @@ public class ExchangeServiceIml implements ExchangeService {
                         .value(x.getValue())
                         .build())
                 .toList();
+    }
+
+    @KafkaListener(topics = "${kafka.topics.exchange-topic}")
+    public void processRates(ExchangeRateList exchangeRateList) {
+        try {
+            updateRates(exchangeRateList.getRates());
+        } catch (Exception e) {
+            log.error("Error processing rates", e);
+        }
     }
 
     @Override

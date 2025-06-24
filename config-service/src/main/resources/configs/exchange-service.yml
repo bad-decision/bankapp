@@ -1,4 +1,20 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: exchange-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "ru.azmeev.bank.*"
+            type:
+              mapping: exchangeRateList:ru.azmeev.bank.exchange.web.dto.ExchangeRateList
+      auto-offset-reset: latest
+      enable-auto-commit: true
+      concurrency: 1
   datasource:
     username: postgres
     password: postgres
@@ -28,3 +44,7 @@ spring:
           issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
 server:
   port: 8050
+
+kafka:
+  topics:
+    exchange-topic: exchange-messages

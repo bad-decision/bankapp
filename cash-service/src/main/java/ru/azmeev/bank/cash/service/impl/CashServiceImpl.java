@@ -9,6 +9,8 @@ import ru.azmeev.bank.cash.service.NotificationService;
 import ru.azmeev.bank.cash.web.dto.CashActionRequest;
 import ru.azmeev.bank.cash.web.dto.CashActionResult;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class CashServiceImpl implements CashService {
@@ -24,11 +26,13 @@ public class CashServiceImpl implements CashService {
         if (isAllowed) {
             Boolean success = accountService.cashOperation(dto);
             cashActionResult = CashActionResult.builder()
+                    .id(UUID.randomUUID())
                     .success(success)
                     .message(success ? "Cash operation was successful" : "Cash operation was not successful")
                     .build();
         } else {
             cashActionResult = CashActionResult.builder()
+                    .id(UUID.randomUUID())
                     .success(false)
                     .message("Cash operation is not allowed")
                     .build();
