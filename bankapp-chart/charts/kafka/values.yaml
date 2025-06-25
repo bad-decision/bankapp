@@ -1,0 +1,40 @@
+global:
+  storageClass: "standard"
+
+kafka:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 8Gi
+  auth:
+    enabled: false
+    clientProtocol: plaintext
+    interBrokerProtocol: plaintext
+  listeners:
+    client:
+      name: CLIENT
+      protocol: PLAINTEXT
+  listenerSecurityProtocolMap: PLAINTEXT:PLAINTEXT
+  zookeeper:
+    enabled: false
+  kraft:
+    enabled: true
+    controllerRoles: true
+    controllerCount: 1
+
+topics:
+  - name: exchange-messages
+    partitions: 1
+    replicationFactor: 2
+    config:
+      retention.ms: 604800
+  - name: cash.notification.msg
+    partitions: 3
+    replicationFactor: 2
+    config:
+      retention.ms: 604800
+  - name: transfer.notification.msg
+    partitions: 3
+    replicationFactor: 2
+    config:
+      retention.ms: 604800

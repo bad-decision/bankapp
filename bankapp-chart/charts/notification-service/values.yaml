@@ -8,3 +8,10 @@ image:
 service:
   type: ClusterIP
   port: 80
+
+kafka:
+  consumer:
+    groupId: "notification-service"
+    autoOffsetReset: "latest"
+    trustedPackages: "ru.azmeev.bank.*"
+    typeMappings: "cashActionResult:ru.azmeev.bank.notification.dto.CashActionResult,transferActionResult:ru.azmeev.bank.notification.dto.TransferActionResult"

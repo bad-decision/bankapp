@@ -1,4 +1,6 @@
 global:
+  kafka:
+    bootstrapServers: "bankapp-kafka:9092"
   services:
     keycloak:
       url: "http://bankapp-keycloak:8090/realms/master"

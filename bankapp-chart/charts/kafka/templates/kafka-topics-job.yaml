@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-create-topics
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: kafka-admin
+      restartPolicy: Never
+      containers:
+        - name: create-topics
+          image: bitnami/kafka
+          command:
+            - /bin/bash
+            - -c
+            - |
+              until /opt/bitnami/kafka/bin/kafka-broker-api-versions.sh \
+              --bootstrap-server {{ .Values.global.kafka.bootstrapServers }}; do
+              echo "Waiting for Kafka broker to be ready..."
+              sleep 5
+              done
+              
+              {{- range .Values.topics }}
+              /opt/bitnami/kafka/bin/kafka-topics.sh \
+                --bootstrap-server {{ $.Values.global.kafka.bootstrapServers }} \
+                --create --if-not-exists \
+                --topic {{ .name }} \
+                --partitions {{ .partitions }} \
+                --replication-factor {{ .replicationFactor }} \
+                {{- with .config }}
+                {{- range $key, $value := . }}
+                --config {{ $key }}={{ $value }}
+                {{- end }}
+                {{- end }}
+              {{- end }}

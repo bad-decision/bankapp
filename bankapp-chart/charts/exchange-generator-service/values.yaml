@@ -13,3 +13,11 @@ secrets:
   keycloak:
     clientId: "exchange-generator-service"
     clientSecret: "WWjquJ7Uz2owLuo0v6Ptibn2jZ288B80"
+
+kafka:
+  producer:
+    acks: 0
+    retries: 0
+    maxInFlightRequests: 1
+    typeMappings:
+      exchangeRateList: "exchangeRateList:ru.azmeev.bank.exchangegenerator.dto.ExchangeRateList"

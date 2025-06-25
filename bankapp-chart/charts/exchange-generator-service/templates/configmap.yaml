@@ -14,3 +14,11 @@ data:
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
   SERVER_PORT: "{{ .Values.service.port }}"
   SERVICE_EXCHANGE_URL: "{{ .Values.global.services.exchange.url }}"
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "{{ .Values.global.kafka.bootstrapServers }}"
+  SPRING_KAFKA_PRODUCER_ACKS: "{{ .Values.kafka.producer.acks }}"
+  SPRING_KAFKA_PRODUCER_RETRIES: "{{ .Values.kafka.producer.retries }}"
+  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: "org.apache.kafka.common.serialization.StringSerializer"
+  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: "org.springframework.kafka.support.serializer.JsonSerializer"
+  SPRING_KAFKA_PRODUCER_MAX_IN_FLIGHT_REQUESTS: "{{ .Values.kafka.producer.maxInFlightRequests }}"
+  SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.producer.typeMappings.exchangeRateList }}"
+  KAFKA_TOPICS_EXCHANGETOPIC: exchange-messages

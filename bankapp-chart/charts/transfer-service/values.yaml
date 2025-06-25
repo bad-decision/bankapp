@@ -13,3 +13,8 @@ secrets:
   keycloak:
     clientId: "transfer-service"
     clientSecret: "5CW9tuhQgl3mIMKvYarcOn8JRt4g8fGF"
+
+kafka:
+  producer:
+    typeMappings:
+      transferActionResult: "transferActionResult:ru.azmeev.bank.transfer.web.dto.TransferResultDto"

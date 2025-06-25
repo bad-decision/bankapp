@@ -17,3 +17,8 @@ data:
   SERVICE_EXCHANGE_URL: "{{ .Values.global.services.exchange.url }}"
   SERVICE_NOTIFICATION_URL: "{{ .Values.global.services.notification.url }}"
   SERVICE_BLOCKER_URL: "{{ .Values.global.services.blocker.url }}"
+  SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS: "{{ .Values.global.kafka.bootstrapServers }}"
+  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.springframework.kafka.support.serializer.JsonSerializer
+  SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.producer.typeMappings.transferActionResult }}"
+  KAFKA_TOPICS_TRANSFERNOTIFICATION: transfer.notification.msg

@@ -28,3 +28,13 @@ secrets:
     username: "postgres"
     password: "postgres"
     url: "jdbc:postgresql://bankapp-exchange-postgres:5432/exchange"
+
+kafka:
+  consumer:
+    groupId: "exchange-service"
+    autoOffsetReset: "latest"
+    enableAutoCommit: true
+    concurrency: 1
+    trustedPackages: "ru.azmeev.bank.*"
+    typeMappings:
+      exchangeRateList: "exchangeRateList:ru.azmeev.bank.exchange.web.dto.ExchangeRateList"

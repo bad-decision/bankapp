@@ -8,3 +8,12 @@ data:
   SPRING_PROFILES_ACTIVE: k8s
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
   SERVER_PORT: "{{ .Values.service.port }}"
+  SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "{{ .Values.global.kafka.bootstrapServers }}"
+  SPRING_KAFKA_CONSUMER_GROUP_ID: "{{ .Values.kafka.consumer.groupId }}"
+  SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+  SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.springframework.kafka.support.serializer.JsonDeserializer
+  SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: "{{ .Values.kafka.consumer.autoOffsetReset }}"
+  SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.consumer.typeMappings }}"
+  SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES: "{{ .Values.kafka.consumer.trustedPackages }}"
+  KAFKA_TOPICS_CASHNOTIFICATION: cash.notification.msg
+  KAFKA_TOPICS_TRANSFERNOTIFICATION: transfer.notification.msg

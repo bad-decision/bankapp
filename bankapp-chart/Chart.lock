@@ -2,6 +2,9 @@ dependencies:
 - name: front-service
   repository: file://charts/front-service
   version: 1.0.0
+- name: kafka
+  repository: file://charts/kafka
+  version: 1.0.0
 - name: keycloak
   repository: file://charts/keycloak
   version: 1.0.0
@@ -26,5 +29,5 @@ dependencies:
 - name: exchange-generator-service
   repository: file://charts/exchange-generator-service
   version: 1.0.0
-digest: sha256:d8dc2b653a9667c1de61e674015621886914befe13f8106fb0a405799ad15702
-generated: "2025-06-16T12:41:19.5327283+03:00"
+digest: sha256:ab1f2b0538c9f213b9bf2b5a3e3c850a5e6426c2dd3f38181954865afcc8ca2d
+generated: "2025-06-25T12:43:18.168623+03:00"

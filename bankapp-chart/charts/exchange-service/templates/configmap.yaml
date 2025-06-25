@@ -17,3 +17,13 @@ data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_REDIRECT_URI: "{baseUrl}/{action}/oauth2/code/{registrationId}"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_SCOPE: openid, profile, email
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "{{ .Values.global.kafka.bootstrapServers }}"
+  SPRING_KAFKA_CONSUMER_GROUP_ID: "{{ .Values.kafka.consumer.groupId }}"
+  SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: "org.apache.kafka.common.serialization.StringDeserializer"
+  SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: "org.springframework.kafka.support.serializer.JsonDeserializer"
+  SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET: "{{ .Values.kafka.consumer.autoOffsetReset }}"
+  SPRING_KAFKA_CONSUMER_ENABLE_AUTO_COMMIT: "{{ .Values.kafka.consumer.enableAutoCommit | default true }}"
+  SPRING_KAFKA_CONSUMER_CONCURRENCY: "{{ .Values.kafka.consumer.concurrency | default 1 }}"
+  SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES: "{{ .Values.kafka.consumer.trustedPackages }}"
+  SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.consumer.typeMappings.exchangeRateList }}"
+  KAFKA_TOPICS_EXCHANGETOPIC: exchange-messages

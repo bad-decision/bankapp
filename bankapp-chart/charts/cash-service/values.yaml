@@ -13,3 +13,7 @@ secrets:
   keycloak:
     clientId: "cash-service"
     clientSecret: "I0StlCY5tNJTvaIbPJdiMBgGtmIR5yN1"
+
+kafka:
+  typeMappings:
+    cashActionResult: "cashActionResult:ru.azmeev.bank.cash.web.dto.CashActionResult"
