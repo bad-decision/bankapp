@@ -20,6 +20,11 @@ public abstract class IntegrationTestBase {
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1");
 
     static {
+        if (System.getenv("CI") != null) {
+            System.setProperty("testcontainers.reuse.enable", "true");
+            System.setProperty("testcontainers.ryuk.disabled", "true");
+        }
+
         postgreSQLContainer.withReuse(true);
         postgreSQLContainer.start();
     }

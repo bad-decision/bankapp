@@ -5,6 +5,7 @@ pipeline {
         TESTCONTAINERS_RYUK_DISABLED = 'true'
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        DOCKER_HOST     = 'tcp://localhost:2375'
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
     }
 
