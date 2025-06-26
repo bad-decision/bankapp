@@ -8,6 +8,8 @@ services:
       - .env
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -16,8 +18,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${KUBECONFIG_PATH}:/root/.kube/config
       - ${MINIKUBE_PATH}:/root/.minikube
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 
 volumes:
   jenkins_home:
