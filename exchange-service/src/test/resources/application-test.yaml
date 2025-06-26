@@ -1,0 +1,53 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: exchange-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "ru.azmeev.bank.*"
+            type:
+              mapping: exchangeRateList:ru.azmeev.bank.exchange.web.dto.ExchangeRateList
+      auto-offset-reset: latest
+      enable-auto-commit: true
+      concurrency: 1
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/exchange
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
+        registration:
+          keycloak:
+            authorizationGrantType: client_credentials
+            provider: keycloak
+            client-id: exchange-service
+            client-secret: ${CLIENT_SECRET:YF7ee06fM9OKnrGOt0HxgL12qc7VgdSO}
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            scope: openid, profile, email
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
+server:
+  port: 8050
+
+kafka:
+  topics:
+    exchange-topic: exchange-messages

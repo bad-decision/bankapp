@@ -115,6 +115,7 @@ pipeline {
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         helm upgrade --install bankapp bankapp-chart \\
+                          --timeout 30m \\
                           --namespace test --create-namespace \\
                           --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
                           --set account-service.image.tag=${IMAGE_TAG} \\

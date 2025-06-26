@@ -1,0 +1,37 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
+        registration:
+          keycloak:
+            authorizationGrantType: client_credentials
+            provider: keycloak
+            client-id: transfer-service
+            client-secret: ${CLIENT_SECRET:5CW9tuhQgl3mIMKvYarcOn8JRt4g8fGF}
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            scope: openid, profile, email
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:http://localhost:8090/realms/master}
+server:
+  port: 8040
+
+service:
+  account:
+    url: lb://gateway-service/account
+  exchange:
+    url: lb://gateway-service/exchange
+  blocker:
+    url: lb://gateway-service/blocker
+
+kafka:
+  topics:
+    transfer-notification: transfer.notification.msg

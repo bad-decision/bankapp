@@ -1,14 +1,14 @@
 package ru.azmeev.bank.cash.web.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CashActionResult {
     private UUID id;
     private Boolean success;
