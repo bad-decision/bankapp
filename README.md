@@ -17,6 +17,7 @@
 - Lombok
 - PostgreSQL
 - Keycloak
+- Kafka
 
 Предварительная настройка:
 - minikube start
