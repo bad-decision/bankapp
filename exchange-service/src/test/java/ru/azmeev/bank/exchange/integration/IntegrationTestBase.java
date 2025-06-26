@@ -8,6 +8,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -23,6 +24,7 @@ public abstract class IntegrationTestBase {
         if (System.getenv("CI") != null) {
             System.setProperty("testcontainers.reuse.enable", "true");
             System.setProperty("testcontainers.ryuk.disabled", "true");
+            System.setProperty("docker.host", "unix:///var/run/docker.sock");
         }
 
         postgreSQLContainer.withReuse(true);

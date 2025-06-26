@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         TESTCONTAINERS_RYUK_DISABLED = 'true'
+        DOCKER_HOST = 'unix:///var/run/docker.sock'
+        TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         DOCKER_HOST     = 'tcp://localhost:2375'
@@ -42,7 +44,7 @@ pipeline {
                 stage('Exchange Service') {
                     steps {
                         dir('.') {
-                            sh './gradlew :exchange-service:clean :exchange-service:build'
+                            sh './gradlew :exchange-service:clean :exchange-service:build -Dtestcontainers.reuse.enable=true -Ddocker.host=unix:///var/run/docker.sock'
                         }
                     }
                 }

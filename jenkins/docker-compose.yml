@@ -3,6 +3,7 @@ services:
     build: .
     container_name: jenkins
     user: root
+    privileged: true
     env_file:
       - .env
     environment:
@@ -15,6 +16,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${KUBECONFIG_PATH}:/root/.kube/config
       - ${MINIKUBE_PATH}:/root/.minikube
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 
 volumes:
   jenkins_home:

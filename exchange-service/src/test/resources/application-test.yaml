@@ -21,8 +21,8 @@ spring:
   datasource:
     username: postgres
     password: postgres
-    url: jdbc:tc:postgresql:16.1:///exchange
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:postgresql://${TESTCONTAINERS_HOST_OVERRIDE:localhost}:${POSTGRES_PORT:5432}/exchange
+    driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
     hibernate:
