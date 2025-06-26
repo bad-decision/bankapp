@@ -2,12 +2,17 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     producer:
-      acks: 0
-      retries: 0
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      max-in-flight-requests: 1
+
+service:
+  account:
+    url: lb://gateway-service/account
+  exchange:
+    url: lb://gateway-service/exchange
+  blocker:
+    url: lb://gateway-service/blocker
 
 kafka:
   topics:
-    exchange-topic: exchange-messages
+    transfer-notification: transfer.notification.msg

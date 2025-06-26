@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        TESTCONTAINERS_RYUK_DISABLED = 'true'
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         IMAGE_TAG       = "${env.BUILD_NUMBER}"

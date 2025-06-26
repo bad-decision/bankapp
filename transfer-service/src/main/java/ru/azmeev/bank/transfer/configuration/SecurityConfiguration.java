@@ -22,6 +22,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Profile("!test")
 public class SecurityConfiguration {
 
     @Bean

@@ -5,9 +5,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -18,13 +16,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ExtendWith(MockitoExtension.class)
 public abstract class IntegrationTestBase {
 
-    @MockitoBean
-    private SecurityFilterChain securityFilterChain;
-
     @ServiceConnection
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1");
 
     static {
+        postgreSQLContainer.withReuse(true);
         postgreSQLContainer.start();
     }
 }
