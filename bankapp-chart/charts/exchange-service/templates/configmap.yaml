@@ -27,3 +27,5 @@ data:
   SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES: "{{ .Values.kafka.consumer.trustedPackages }}"
   SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.consumer.typeMappings.exchangeRateList }}"
   KAFKA_TOPICS_EXCHANGETOPIC: exchange-messages
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"

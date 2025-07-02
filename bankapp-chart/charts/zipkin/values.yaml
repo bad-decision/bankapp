@@ -1,0 +1,5 @@
+zipkin:
+  enabled: true
+  cassandra:
+    enabled: false
+  storageType: mem

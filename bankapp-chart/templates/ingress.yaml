@@ -7,6 +7,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
+    - host: zipkin-{{ .Release.Namespace }}.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bankapp-zipkin
+                port:
+                  number: 9411
     - host: bankapp-{{ .Release.Namespace }}.local
       http:
         paths:

@@ -22,3 +22,5 @@ data:
   SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.springframework.kafka.support.serializer.JsonSerializer
   SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.producer.typeMappings.transferActionResult }}"
   KAFKA_TOPICS_TRANSFERNOTIFICATION: transfer.notification.msg
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1

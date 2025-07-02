@@ -2,6 +2,8 @@ global:
   kafka:
     bootstrapServers: "bankapp-kafka:9092"
   services:
+    zipkin:
+      url: "http://bankapp-zipkin:9411/api/v2/spans"
     keycloak:
       url: "http://bankapp-keycloak:8090/realms/master"
     account:

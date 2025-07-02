@@ -17,3 +17,5 @@ data:
   SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES: "{{ .Values.kafka.consumer.trustedPackages }}"
   KAFKA_TOPICS_CASHNOTIFICATION: cash.notification.msg
   KAFKA_TOPICS_TRANSFERNOTIFICATION: transfer.notification.msg
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"

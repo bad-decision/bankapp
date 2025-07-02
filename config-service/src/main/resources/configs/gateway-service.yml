@@ -60,3 +60,11 @@ cloud:
   exchange-generator-service-url: lb://exchange-generator-service
   blocker-service-url: lb://blocker-service
   notification-service-url: lb://notification-service
+
+management:
+  zipkin:
+    tracing:
+      endpoint:  http://127.0.0.1:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1

@@ -8,3 +8,5 @@ data:
   SPRING_PROFILES_ACTIVE: k8s
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "{{ .Values.global.services.keycloak.url }}"
   SERVER_PORT: "{{ .Values.service.port }}"
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"

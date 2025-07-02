@@ -22,3 +22,5 @@ data:
   SPRING_KAFKA_PRODUCER_MAX_IN_FLIGHT_REQUESTS: "{{ .Values.kafka.producer.maxInFlightRequests }}"
   SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING: "{{ .Values.kafka.producer.typeMappings.exchangeRateList }}"
   KAFKA_TOPICS_EXCHANGETOPIC: exchange-messages
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"

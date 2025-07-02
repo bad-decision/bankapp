@@ -1,10 +1,15 @@
 package ru.azmeev.bank.cash.configuration;
 
+import brave.Tracing;
+import brave.propagation.Propagation;
+import brave.propagation.TraceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,7 +43,6 @@ public class SecurityConfiguration {
     }
 
     @Bean
-
     public RestClient restClient(RestClient.Builder builder) {
         return builder.build();
     }
@@ -46,20 +50,16 @@ public class SecurityConfiguration {
     @Bean
     @LoadBalanced
     @Profile("!k8s")
-    public RestClient.Builder loadBalancedRestClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
-        OAuth2ClientHttpRequestInterceptor requestInterceptor =
-                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-
-        return RestClient.builder().requestInterceptor(requestInterceptor);
+    public RestClient.Builder loadBalancedRestClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager,
+                                                            Tracing tracing) {
+        return createBuilderWithInterceptors(authorizedClientManager, tracing);
     }
 
     @Bean
     @Profile("k8s")
-    public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager) {
-        OAuth2ClientHttpRequestInterceptor requestInterceptor =
-                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-
-        return RestClient.builder().requestInterceptor(requestInterceptor);
+    public RestClient.Builder restClientBuilder(OAuth2AuthorizedClientManager authorizedClientManager,
+                                                Tracing tracing) {
+        return createBuilderWithInterceptors(authorizedClientManager, tracing);
     }
 
     @Bean
@@ -77,5 +77,27 @@ public class SecurityConfiguration {
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
+    }
+
+    private RestClient.Builder createBuilderWithInterceptors(OAuth2AuthorizedClientManager authorizedClientManager,
+                                                             Tracing tracing) {
+        OAuth2ClientHttpRequestInterceptor oauthInterceptor =
+                new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+
+        Propagation<String> propagation = tracing.propagation();
+        TraceContext.Injector<org.springframework.http.HttpHeaders> injector =
+                propagation.injector(HttpHeaders::add);
+
+        ClientHttpRequestInterceptor zipkinInterceptor = (request, body, execution) -> {
+            TraceContext traceContext = tracing.currentTraceContext().get();
+            if (traceContext != null) {
+                injector.inject(traceContext, request.getHeaders());
+            }
+            return execution.execute(request, body);
+        };
+
+        return RestClient.builder()
+                .requestInterceptor(oauthInterceptor)
+                .requestInterceptor(zipkinInterceptor);
     }
 }

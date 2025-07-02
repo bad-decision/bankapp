@@ -17,3 +17,5 @@ data:
   SERVICE_CASH_URL: "{{ .Values.global.services.cash.url }}"
   SERVICE_EXCHANGE_URL: "{{ .Values.global.services.exchange.url }}"
   SERVICE_TRANSFER_URL: "{{ .Values.global.services.transfer.url }}"
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
+  MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"
