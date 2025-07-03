@@ -13,4 +13,6 @@ public class TransferActionResult {
     private UUID id;
     private Boolean success;
     private String message;
+    private String fromLogin;
+    private String toLogin;
 }

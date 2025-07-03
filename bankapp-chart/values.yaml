@@ -18,6 +18,10 @@ global:
       url: "http://bankapp-transfer-service"
     cash:
       url: "http://bankapp-cash-service"
+    front-service:
+      url: "http://bankapp-front-service"
+    exchange-generator-service:
+      url: "http://bankapp-exchange-generator-service"
   test:
     keycloak:
       clientId: "transfer-service"

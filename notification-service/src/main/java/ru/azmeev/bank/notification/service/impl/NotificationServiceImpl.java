@@ -1,5 +1,6 @@
 package ru.azmeev.bank.notification.service.impl;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -17,6 +18,8 @@ import org.springframework.kafka.retrytopic.DltStrategy;
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
+    private final MeterRegistry meterRegistry;
+
     @Override
     @RetryableTopic(
             attempts = "2",
@@ -25,7 +28,12 @@ public class NotificationServiceImpl implements NotificationService {
     )
     @KafkaListener(topics = "${kafka.topics.cash-notification}")
     public void cashOperationNotification(CashActionResult dto) {
-        System.out.println(dto.getMessage());
+        try {
+            // some difficult logic
+            System.out.println(dto.getMessage());
+        } catch (Exception e) {
+            meterRegistry.counter("notification-cash-error", "login", dto.getLogin());
+        }
     }
 
     @Override
@@ -36,7 +44,12 @@ public class NotificationServiceImpl implements NotificationService {
             dltStrategy = DltStrategy.FAIL_ON_ERROR
     )
     public void transferOperationNotification(TransferActionResult dto) {
-        System.out.println(dto.getMessage());
+        try {
+            // some difficult logic
+            System.out.println(dto.getMessage());
+        } catch (Exception e) {
+            meterRegistry.counter("transfer-cash-error", "fromLogin", dto.getFromLogin());
+        }
     }
 
     @DltHandler

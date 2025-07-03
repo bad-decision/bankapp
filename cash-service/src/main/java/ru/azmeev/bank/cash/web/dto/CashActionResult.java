@@ -13,4 +13,5 @@ public class CashActionResult {
     private UUID id;
     private Boolean success;
     private String message;
+    private String login;
 }

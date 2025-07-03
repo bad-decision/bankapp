@@ -28,16 +28,17 @@ public class CashServiceImpl implements CashService {
             cashActionResult = CashActionResult.builder()
                     .id(UUID.randomUUID())
                     .success(success)
+                    .login(dto.getLogin())
                     .message(success ? "Cash operation was successful" : "Cash operation was not successful")
                     .build();
         } else {
             cashActionResult = CashActionResult.builder()
                     .id(UUID.randomUUID())
                     .success(false)
+                    .login(dto.getLogin())
                     .message("Cash operation is not allowed")
                     .build();
         }
-
         notificationService.notify(cashActionResult);
 
         return cashActionResult;

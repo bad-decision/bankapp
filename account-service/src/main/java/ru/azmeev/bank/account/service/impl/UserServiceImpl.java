@@ -1,5 +1,6 @@
 package ru.azmeev.bank.account.service.impl;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final CurrencyRepository currencyRepository;
     private final AccountRepository accountRepository;
     private final UserMapper userMapper;
+    private final MeterRegistry meterRegistry;
 
     @Override
     public UserDto findUserByLogin(String login) {
@@ -106,6 +108,10 @@ public class UserServiceImpl implements UserService {
             return true;
         }
 
+        meterRegistry.counter("cash_operation",
+                "type", dto.getAction().toString(),
+                "login", dto.getLogin()
+        ).increment();
         return false;
     }
 
@@ -131,6 +137,13 @@ public class UserServiceImpl implements UserService {
             accountRepository.saveAll(List.of(fromAccount, toAccount));
             return true;
         }
+
+        meterRegistry.counter("transfer_operation",
+                "loginFrom", dto.getFromLogin(),
+                "loginTo", dto.getToLogin(),
+                "accFrom", fromAccount.getId().toString(),
+                "accTo", toAccount.getId().toString()
+        ).increment();
         return false;
     }
 

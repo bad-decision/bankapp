@@ -19,3 +19,4 @@ data:
   SERVICE_TRANSFER_URL: "{{ .Values.global.services.transfer.url }}"
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
   MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"

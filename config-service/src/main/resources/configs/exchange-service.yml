@@ -58,3 +58,7 @@ management:
       span-joining-supported: false
     sampling:
       probability: 1
+  endpoints:
+    web:
+      exposure:
+        include: '*'

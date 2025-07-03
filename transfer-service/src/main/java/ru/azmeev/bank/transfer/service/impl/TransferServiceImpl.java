@@ -50,6 +50,8 @@ public class TransferServiceImpl implements TransferService {
             transferResultDto = TransferResultDto.builder()
                     .id(UUID.randomUUID())
                     .success(transferResult)
+                    .fromLogin(dto.getFromLogin())
+                    .toLogin(dto.getToLogin())
                     .message(transferResult ? "Transfer operation was successfully" : "Transfer operation was not successfully")
                     .build();
 
@@ -57,6 +59,8 @@ public class TransferServiceImpl implements TransferService {
             transferResultDto = TransferResultDto.builder()
                     .id(UUID.randomUUID())
                     .success(false)
+                    .fromLogin(dto.getFromLogin())
+                    .toLogin(dto.getToLogin())
                     .message("Transfer operation is not allowed")
                     .build();
         }

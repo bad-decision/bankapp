@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
+import ru.azmeev.bank.front.monitoring.LoginMetrics;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,13 +48,23 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoginMetrics loginMetrics) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/signup").permitAll()
+                        .requestMatchers("/", "/signup", "/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/main", true)
+                        .successHandler((request, response, authentication) -> {
+                            String username = authentication.getName();
+                            loginMetrics.incrementSuccess(username);
+                            response.sendRedirect("/main");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            String username = request.getParameter("username");
+                            loginMetrics.incrementFailure(username != null ? username : "unknown");
+                            response.sendRedirect("/login?error");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
