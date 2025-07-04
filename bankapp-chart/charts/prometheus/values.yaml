@@ -1,64 +1,79 @@
-prometheus:
-  enabled: true
-  server:
-    global:
-      scrape_interval: 30s
-      evaluation_interval: 30s
-      scrape_timeout: 10s
-  extraScrapeConfigs: |
-    - job_name: front-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-front-service
-          labels:
-            app: 'front-service'
-    - job_name: cash-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-cash-service
-          labels:
-            app: 'cash-service'
-    - job_name: transfer-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-transfer-service
-          labels:
-            app: 'transfer-service'
-    - job_name: blocker-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-blocker-service
-          labels:
-            app: 'blocker-service'
-    - job_name: notification-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-notification-service
-          labels:
-            app: 'notification-service'
-    - job_name: exchange-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-exchange-service
-          labels:
-            app: 'exchange-service'
-    - job_name: account-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-account-service
-          labels:
-            app: 'account-service'
-    - job_name: exchange-generator-service
-      metrics_path: '/actuator/prometheus'
-      static_configs:
-        - targets:
-            - bankapp-exchange-generator-service
-          labels:
-            app: 'exchange-generator-service'
+kube-prometheus-stack:
+  grafana:
+    dashboardProviders:
+      providers.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+    dashboards:
+      default:
+        spring-boot-dashboard:
+          gnetId: 19004
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+  prometheus:
+    prometheusSpec:
+      additionalScrapeConfigs: |
+        - job_name: front-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-front-service
+              labels:
+                app: 'front-service'
+        - job_name: cash-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-cash-service
+              labels:
+                app: 'cash-service'
+        - job_name: transfer-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-transfer-service
+              labels:
+                app: 'transfer-service'
+        - job_name: blocker-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-blocker-service
+              labels:
+                app: 'blocker-service'
+        - job_name: notification-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-notification-service
+              labels:
+                app: 'notification-service'
+        - job_name: exchange-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-exchange-service
+              labels:
+                app: 'exchange-service'
+        - job_name: account-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-account-service
+              labels:
+                app: 'account-service'
+        - job_name: exchange-generator-service
+          metrics_path: '/actuator/prometheus'
+          static_configs:
+            - targets:
+                - bankapp-exchange-generator-service
+              labels:
+                app: 'exchange-generator-service'

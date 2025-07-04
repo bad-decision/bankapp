@@ -7,16 +7,26 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: prom-{{ .Release.Namespace }}.local
+    - host: grafana-{{ .Release.Namespace }}.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: bankapp-prometheus-server
+                name: bankapp-grafana
                 port:
                   number: 80
+    - host: prometheus-{{ .Release.Namespace }}.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bankapp-kube-prometheus-st-prometheus
+                port:
+                  number: 9090
     - host: zipkin-{{ .Release.Namespace }}.local
       http:
         paths:
