@@ -38,3 +38,8 @@ topics:
     replicationFactor: 2
     config:
       retention.ms: 604800
+  - name: bankapp-logs
+    partitions: 3
+    replicationFactor: 2
+    config:
+      retention.ms: 604800

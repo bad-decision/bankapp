@@ -26,6 +26,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    configurations.all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation 'org.slf4j:slf4j-api'
+    compileOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'
+    implementation 'org.apache.kafka:kafka-clients'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'

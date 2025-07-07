@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+        </Console>
+        <Kafka name="Kafka" topic="bankapp-logs" syncSend="false">
+            <JsonLayout complete="false" compact="true" eventEol="true">
+                <KeyValuePair key="traceId" value="$${ctx:traceId:-}"/>
+                <KeyValuePair key="spanId" value="$${ctx:spanId:-}"/>
+                <KeyValuePair key="parentId" value="$${ctx:parentId:-}"/>
+            </JsonLayout>
+            <Property name="bootstrap.servers">${env:KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}</Property>
+            <Property name="linger.ms">1000</Property>
+        </Kafka>
+    </Appenders>
+    <Loggers>
+        <Root level="warn">
+            <AppenderRef ref="Kafka"/>
+        </Root>
+        <Logger name="org.apache.kafka" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>
