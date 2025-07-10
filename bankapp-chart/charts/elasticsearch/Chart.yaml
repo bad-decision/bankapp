@@ -1,0 +1,9 @@
+apiVersion: v2
+name: elasticsearch
+description: Elasticsearch chart
+version: 1.0.0
+appVersion: "22.0.11"
+dependencies:
+  - name: elasticsearch
+    version: "22.0.11"
+    repository: "oci://registry-1.docker.io/bitnamicharts"

@@ -1,0 +1,21 @@
+global:
+  kibanaEnabled: true
+
+elasticsearch:
+  security:
+    enabled: false
+  master:
+    masterOnly: false
+    replicaCount: 1
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    replicaCount: 0
+
+  kibana:
+    elasticsearch:
+      security:
+        auth:
+          enabled: false

@@ -15,10 +15,10 @@
         </Kafka>
     </Appenders>
     <Loggers>
-        <Root level="warn">
+        <Root level="debug">
             <AppenderRef ref="Kafka"/>
         </Root>
-        <Logger name="org.apache.kafka" level="warn" additivity="false">
+        <Logger name="org.apache.kafka" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
     </Loggers>

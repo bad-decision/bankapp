@@ -1,0 +1,72 @@
+logstash:
+  input: |
+    kafka {
+      bootstrap_servers => "bankapp-kafka:9092"
+      topics => ["bankapp-logs"]
+      codec => json
+      consumer_threads => 3
+      decorate_events => true
+      group_id => "logstash-group"
+    }
+  filter: |
+    json {
+      source => "message"
+      target => "log_event"
+      remove_field => ["message"]
+    }
+
+    ruby {
+      code => '
+        epoch = event.get("[log_event][instant][epochSecond]").to_i
+        nano = event.get("[log_event][instant][nanoOfSecond]").to_i
+        event.set("@timestamp", Time.at(epoch, nano / 1000.0).utc)
+      '
+    }
+
+    mutate {
+      rename => { "[log_event][level]" => "[log][level]" }
+      lowercase => [ "[log][level]" ]
+    }
+
+    mutate {
+      rename => {
+        "[log_event][thread]" => "[process][thread][name]"
+        "[log_event][threadId]" => "[process][thread][id]"
+        "[log_event][loggerName]" => "[log][logger]"
+        "[log_event][message]" => "[message]"
+        "[log_event][traceId]" => "[trace][id]"
+        "[log_event][spanId]" => "[span][id]"
+      }
+
+      add_field => {
+        "[ecs][version]" => "8.0"
+        "[event][dataset]" => "application.logs"
+      }
+    }
+
+    mutate {
+      remove_field => [
+        "[log_event][instant]",
+        "[log_event][endOfBatch]",
+        "[log_event][loggerFqcn]",
+        "[log_event][threadPriority]"
+      ]
+    }
+
+    if [@metadata][kafka] {
+      mutate {
+        add_field => {
+          "[kafka][topic]" => "%{[@metadata][kafka][topic]}"
+          "[kafka][partition]" => "%{[@metadata][kafka][partition]}"
+          "[kafka][offset]" => "%{[@metadata][kafka][offset]}"
+        }
+      }
+    }
+  output: |
+    stdout { codec => rubydebug }
+    elasticsearch {
+      hosts => ["http://bankapp-elasticsearch:9200"]
+      index => "bankapp-logs-%{+YYYY.MM.dd}"
+      document_id => "%{[@metadata][kafka][offset]}"
+      ssl_enabled => false
+    }

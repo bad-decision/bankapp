@@ -23,3 +23,4 @@ data:
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "{{ .Values.global.services.zipkin.url }}"
   MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1"
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+  KAFKA_BOOTSTRAP_SERVERS: "{{ .Values.global.kafka.bootstrapServers }}"
