@@ -18,6 +18,9 @@
 - PostgreSQL
 - Keycloak
 - Kafka
+- Prometheus
+- Grafana
+- ELK stack
 
 Предварительная настройка:
 - minikube start
